@@ -1,0 +1,430 @@
+---
+author: "Shubhang Periwal 19201104"
+date: "11/13/2019"
+output: 
+  pdf_document: 
+    latex_engine: xelatex
+title: "PAA"
+---
+## R Markdown
+```{r}
+library(car)
+library(corrplot)
+library(olsrr)
+```
+Libraries required to plot and do other things required in the assignment
+
+1. Using a boxplot, histogram and summary. Describe the distribution of
+the sales price of the houses.
+```{r Exploratory_Data_Analysis_1}
+#Exploratory Data Analysis q1
+data = read.csv("House.csv",header = TRUE)
+summary(data$Price)
+boxplot(data$Price)
+hist(data$Price)
+
+```
+1. Using a boxplot, histogram and summary. Describe the distribution of
+the sales price of the houses.
+
+From the boxplot we can see the distribution of prices with the frequency of the numbet of houses. We can see that 50% of the houses are distributed 
+around 250k and 340k with median close to 280. The cost of houses start at aroun 150k and is there till 450k. 
+
+From the histogram we can see that the data is normally distributed with most number of houses priced between 250k and 300k. 
+
+From the summary we can see that the price minimum price of the house is 155.5k. 25% of the houses cost under 242.8k(1st quartile). 50% of the houses cost under 276k. 75%of the houses cost under 336.8k and the maximum cost of 
+a house is 450k. Summary also specifies the mean which is the average cost of 
+all houses with the value of 285.8k
+
+
+2. Convert all the categorical variables to factors. Using the summary and
+a boxplot describe how sales prices vary with respect to the number of
+bedrooms, bathrooms, garage size and school.
+```{r Exploratory_Data_Analysis_2}
+#Exploratory Data Analysis q2
+data$School=factor(data$School)
+data$Bath = factor(data$Bath,levels = c(1,1.1,2,2.1,3,3.1),labels=c(1,1.1,2,2.1,3,3.1))
+data$Bed = factor(data$Bed, levels = c(2,3,4,5,6),labels=c(2,3,4,5,6))
+data$Lot = factor(data$Lot)
+by(data$Price,data$Bath,summary)
+by(data$Price,data$Bed,summary)
+by(data$Price,data$Garage,summary)
+by(data$Price,data$School,summary)
+boxplot(data$Price~data$Bed)
+boxplot(data$Price~data$Bath)
+boxplot(data$Price~data$Garage)
+boxplot(data$Price~data$School)
+```
+
+Number of bedrooms:
+
+When the number of bedrooms is 2, the range is just of 51k. The price starts at 299k upto 350k.
+This means that the prices with 2 bedrooms do not have a high variance when compared to prices of house having 3,4 and 5 bedrooms which have a high range. 
+
+3 bed: range: 245.5k with prices starting from 189.5k upto 435k, Mean is 297 and median is 297.3 which are very close values. This shows that the data might be uniformly distributed. 
+
+4 bed: range: 294.5k with prices from 155.5k and 450k.Mean is 266.6 and median is 254.4 which are close values. This shows that the data might be uniformly distributed. 
+
+5 bed: range: 164.5k with prices from 185k to 349k. Mean is 259.5k and median is 269k which are
+close values. This shows that the data might be uniformly distributed.
+
+6 bed: range is 0. There is just once input everything is the same.
+Number of Bathrooms
+
+1 Bath: Range: 115k with prices from 235k to 350k . The mean is 292.5 and the median is also the same. 
+Which shows that the data could be uniformly distributed.  We can also check this by comparing the differences 
+between each of the quartiles which is around 30k in all cases. 
+
+1.1	Bath:Range:170.5k with prices from 215k to 385.5k. The mean is 307 and the median is 325 
+which are not close. This shows that the data is not uniformly distributed. The difference between each quartile is also not close to each other.  
+
+2 Bath: Range: 279.5k with prices varying from 155.5k to 435k. The mean is 270k and median is 259k.
+The data is more weighted on the lower side and the data is not uniformly distributed. 
+
+2.1 Bath:Range:160k. The mean is 274.5k and the median is 269.9k which shows that the data might be uniformly 
+distributed as the difference between each quartile is also approximately 20. 
+
+3 Bath:Range:220k. The mean is 307.8 and the median is 295k.
+
+3.1 Bath:Range: 60k. The range is very less this shows that the prices are concentrated within 
+a small region between 285 and 345k
+Garage size:
+0: Range: 208k. The median and mean are far apart which shows that the data is not uniformly distributed. 
+The gap between median and third quartile is much more than the difference between 1st and second. 
+1:Range:230k. Similar observations as above. 
+2:Range:205k. Similar but little less gap than above observations.
+3:Range:40k. . The range is very less this shows that the prices are concentrated within a small region
+School :
+The prices of houses near Alexandera school are in general lower when compared to other schools.
+Cost of house near High school is much more higher. This shows that school does affect the cost of a house other things being constant.  
+
+
+
+3. Using the summary, correlation and the pairs plots discuss the relationship between the response sales price and each of the numeric predictor
+variables
+```{r Exploratory_Data_Analysis_3}
+cor(data$Price,data$Size)
+cor(data$Price,data$Year)
+plot(data$Size,data$Price)
+plot(data$Year,data$Price)
+by(data$Price,data$Size,summary)
+by(data$Price,data$Year,summary)
+pairs(data$Price~data$Size+data$Year)
+```
+
+Price vs Year
+As we move forward in time from 1900’s the number of data points increase with maximum number 
+of data points between 1960 and 1980. The houses are priced between 150k to 450k. The range of the
+cost of houses increase as the number of data points increase with the maximum range in around 1950-1970.
+During the years 1950-1980 the prices are more scattered when compared to prices of the house afterwards
+which are not very scattered and lie between 270k and 350k in the years 1990 to end of the data. During 
+late 1950s and 1960s the prices of a house varied from as low as 175 to ass high as 450. The correlation 
+between price and year is positive and non zero which shows that the prices tend to increase over time.
+
+Price vs Size
+We can see that the prices and size have a positive correlation of 0.2, which shows that as size increases
+there is an average increase in the cost of a house. The maximum number of houses have the size in the range
+between 1.75k and 2.3k. the houses outside this range can be considered as outliers as there are very less
+number of data points outside of this range. 
+
+1. Fit a multiple linear regression model to the data with sales price as the
+response and size, lot, bath, bed, year, garage and school as the predictor
+variables. Write down the equation for this model.
+
+
+```{r Regression_Model}
+model=lm(Price~Size+Lot+Bath+Bed+Year+Garage+School,data = data)
+summary(model)
+#removing garage 3 as it is giving na values
+data$Garage = factor(data$Garage, levels=c(0,1,2,3),labels=c(0,1,2,2))
+model=lm(Price~Size+Lot+Bath+Bed+Year+Garage+School,data = data)
+summary(model)
+plot(rstudent(model))
+summary(rstudent(model))
+```
+
+1)
+ y = -884.2593 + 39.3738*Size + Lot2*56.9196 + Lot3*16.2949 + Lot4*20.0807 + Lot5*50.5869 + Lot6*224.5395
+ + Lot7*48.2408 + Lot8+(-31.1897) + Lot11*192.0355 + Bath1.1*131.5562
+ + Bath2*65.1129 + Bath2.1*74.2050 + Bath3*104.2021 + Bath3.1*84.5954 + Bed3*(-47.4253) + Bed4*(-54.4886)
+ + Bed5*(-48.2645) + Bed6*(-118.6555) + 0.4996*Year + Garage1*(-24.3447) +
+ Garage2*(18.8511) + SchoolHigh*99.7440 + SchoolNotreDame*72.6369 + SchoolStLouis*11.1148 +
+ SchoolStMarys*13.1969 + SchoolStratford*29.6125
+ 
+2) 
+
+β0 : -884.2593
+
+3)
+βsize : 39.3738
+
+4)
+βBath1.1 : 131.5562
+
+5)
+Bed2 is the default so there would be no change in the price of the house given that other factors remain constant.
+incase of 3 beds, the cost would decrease by 47000 approximately. Similarly the price would change based on the 
+slope as given in the above table. The price would decrease by 54488 in case of 4 beds, it would decrease by 48264 
+in case of 5 beds and by 118655 in case of six beds given that none of the other factors are changed. 
+
+6)
+The predictor variables that change the price significantly are 
+Lot11  
+Bath1.1
+
+7)
+Size : 1 Unit increase leads to an increase of 39.3738k in increase of price (Maximum : 2.896)
+Lot : Lot6 should be 1
+Bath : Bath1.1 should be 1
+Bed : House with 2 beds would have maximum value
+Year : 1 Unit of increase leads to 0.4996k increase in price (Year : 2005)
+Garage : Garage2 should be selected
+School : High School
+
+8)
+Size : 1 Unit decrease leads to a decrease of 39.3738k in increase of price (Minimum : 1.44)
+Lot : Lot8 should be 1
+Bath : Bath1 should be 1 i.e. 0
+Bed : House with 6 beds would have minimum value
+Year : 1 Unit of decrease leads to 0.4996k decrease in price (Year 1905)
+Garage : Garage2 should be selected
+School : Alexandra School
+
+9)
+The residuals are scattered around the 0 value with some variance. Some values are outside the range of 
+-2 to 2 which can be considered as outliers.The gap between first quartile, median and second quartile is
+approximately the same which shows that the data is uniformly distributed (can be inferred from the summary)
+with the range of around 4.5. The residual standard error is 39.97%, which shows that the model is not 
+adequate for getting the prices. 
+
+10)
+Adjusted R-squared value: .561
+
+11)
+F-statistic: 4.687 on 26 and 49 Degrees of freedom,  p-value: 1.663e-06
+The hypothesis being tested is that all beta values are 0. 
+As p-value is really close to 0 and is not significant when compared to the F-statistic 
+value we can safely reject the NULL hypothesis. 
+
+```{r ANOVA_1}
+anova(model)
+```
+1)
+
+Analysis of Variance (ANOVA) is a statistical analysis to test NULL hypothesis for H~0 and non zero beta for H~1.
+
+Size: 0.0112903
+We can reject the NULL hypothesis
+Lot : 0.0025749
+We can reject the NULL hypothesis
+Bath : 0.0006084
+We can reject the NULL hypothesis
+Bed : 0.0104985
+We can reject the NULL hypothesis
+year : 0.2620764
+We can't reject the NULL hypothesis as P value is significant, we can put βyear as 0.
+Garage : 0.0423383
+We can reject the NULL hypothesis
+School : 2.766e-05
+We can reject the NULL hypothesis
+Conclusion : βYear has a high value of NULL hypothesis, so we can consider removing year. 
+```{r ANOVA_2_and_3}
+model=lm(Price~Size+Lot+Bath+Bed+Year+Garage+School,data = data)
+Anova(model,type=2)
+#removing variables with high null hypothesis
+model1=lm(Price~Lot+Bath+Garage+School,data = data)
+Anova(model1,type=2)
+```
+
+
+Size: 0.1782835
+We can't reject the NULL hypothesis as P value is significant.
+Lot : 0.0008723
+We can reject the NULL hypothesis
+Bath : 0.0097351
+We can reject the NULL hypothesis
+Bed : 0.5245257
+We can't reject the NULL hypothesis as P value is significant.
+year : 0.1702629 
+We can't reject the NULL hypothesis as P value is significant.
+Garage : 0.0621867
+We can reject the NULL hypothesis
+School : 2.766e-05
+We can reject the NULL hypothesis
+
+
+After removing variables with low significance
+Lot : 0.0002271
+We can reject the NULL hypothesis
+Bath : 0.0141673
+We can reject the NULL hypothesis
+Garage :0.0053242
+We can reject the NULL hypothesis
+School : 7.781e-05
+We can reject the NULL hypothesis
+
+As we decrease the number of variables, the value of other p-values tend towards zero showing that they are even more significant now. 
+
+```{r Diagnostics_1}
+#q1
+avPlots(model)
+crPlots(model)
+```
+From the above AV plots we can summarize that even though we are trying to model the data in a linear plot,
+the data is highly scattered along the regression line which shows high amount of variance. The plot is
+accurate for a few variables which have less amount of variance such as for Alexandra school, the box plot
+is highly concentrated, same is true for garage1.
+We can improve this by using splines, polynomials(more than 1 degree) or transformations. 
+From CV plots we can see that linear model and smooth model are close. 
+
+Size,Lot2,lot5,lot6,lot7,lot11,Bath1.1,Bath2,Bath2.1,Bath3,Bath3.1 and price have a postive correlation, 
+as the line is upward sloping whereas lot8,Bed3,Bed4,Bed5 and bed6 have a negative correlation .
+
+The copmponent + residual plot shows whether the relationship is linear or not. In the fist plot we can 
+see that the dashed line and the pink line are very close which shows that this model can be represented linearly. 
+
+We can improve this by using polynomials (greater than 1 degree) or perhaps transformations, or even dimensionality reduction etc. 
+
+
+
+```{r Diagnostics_2}
+#q2
+dwt(model)
+```
+We can improve the given model, as there is a significant amount of autocorrelation. We can reject the NULL hypothesis as p value is just .044. 
+
+2 common violations are: 
+
+- Outliers in the model lead to non constant variance and biased and inefficient result.
+- Violation of random/i.i.d sample assumption results in heteroscedasticity.
+
+The dependent samples would lead to a biased result which could push a model in one direction leading to misleading output.
+
+We could correct the outliers by using filters after creating the first model of data, or we could use time series analysis 
+(ARIMA modelling) or we could use PCA to remove non significant variables. 
+
+
+
+```{r Diagnostics_3}
+#q3
+corr = corrplot.mixed(cor(data[,c(2,6)]))
+corr
+vif(model)
+```
+3)
+We can create corelation plot of only numerical variables (The value must be numeric). The year and size are correlated
+with a factor of 0.17 which means that we should not have any problem regarding the same.
+
+Multicollinearity exists whenever an independent variable is highly correlated with one or more of the other independent
+variables in a multiple regression equation. This could be an issue as one variable could be derived by a linear combination
+of others making it redundant, as it could safely be removed by modifying the other coefficients. This makes the model 
+unnecessarily complex, adding parameters that we don't actually need. We can remove variables which are highly dependant on others,
+and modify our linear model accordingly. We can do a dimension reduction using PCA or any other techniques.
+
+
+
+```{r Diagnostics_4}
+#q4
+plot(fitted(model),rstudent(model))
+plot(data$Size,rstudent(model))
+plot(data$Year,rstudent(model))
+```
+4)
+the points are randomly scattered around the origin, they have no as such defined pattern and the variance seems to be constant.
+There is no heteroscedasticity as no pattern can be seen (errors do not seem biased). 
+If the errors are biased or there is heteroscedasticity then that means the model is not well represented as we are missing
+out some pattern present in the output. 
+heteroscedasticity can be removed by taking out by using weighted least squares technique.
+
+```{r Diagnostics_5}
+#q5
+hist(rstudent(model))
+qqnorm(rstudent(model))
+qqline(rstudent(model))
+boxplot(rstudent(model))
+summary(rstudent(model))
+```
+
+The data seems to be normally distributed. No outliers were found in the box plot.The data seems to be a little rightward shifted.
+This can be seen in both histogram and box plot. The density is higher on the right side.  
+
+From the qq plot we can see that most of the points lie on the straight line which means that the residuals are normally distributed. 
+
+Effect of non-normality have on the regression model
+the amount of error in our model is not consistent across the full range of your observed data.
+The values of T-test and F-test are affected
+
+The non-normality can be corrected by using a different model, interactions and transformations.
+
+```{r Leverage_Influence_and_Outliers}
+#q1
+leveragePlots(model)
+leverageVal = hat(model.matrix(model))
+plot(leverageVal)
+data[leverageVal>0.2,]
+leverage_points=as.numeric(which(hatvalues(model)>((2*25)/length(data$Price))))
+leverage_points
+#q2
+influencePlot(model)
+ols_plot_cooksd_bar(model)
+ols_plot_dfbetas(model)
+ols_plot_resid_lev(model)
+#q3
+outlierTest(model)
+
+```
+
+1)
+leverage point:A leverage point is one with an unusual X-value. It affects the modelsummary statistics 
+(e.g.R2,SSE, etc...) but has little effect on the estimates of the regression coefficients. 
+High leverage points have the potential to affect the fit of the model.
+
+- This point does not affect the estimates of the regression coefficients.
+- It affects the model summary statistics e.g., 2 R , standard errors of regression coefficients etc.
+
+Leverage Points : 4  5  6 21 35 37 47 74
+
+
+2)
+An influential point has an usual Y -value also. It has a noticeable
+impact on the model coefficients: it ‘pulls’ the regression model in its
+direction.
+
+- It has a noticeable impact on the model coefficients.
+- It pulls the regression model in its direction.
+
+Influential Points : 30,44,41,73
+
+3)
+An outlier is an extreme observation. Typically points further than, say, three or four
+standard deviations from the mean are considered as “outliers”. An outlier is an observation 
+where the response does not correspond to the model fitted to the bulk of the data.
+
+
+We can see 3 outliers in the graph. We can neglect them as they are very close to the actual data.
+We can also drop these points if the distance increases. 
+
+Check data entry.Investigate whether the context provide an explanation. 
+Some scientific discoveries come from noticing unexpected irregularities.
+Exclude the outlier, see its influence. Perhaps present analysis with and
+without the outlier. When the model is changed, try to reintroduce the outlier.
+
+
+
+
+```{r evcipi}
+ci=predict(model,level = 0.95,interval = "confidence")
+pi=predict(model,level = 0.95,interval = "predict")
+plot(data$Price,col="dark green")
+points(fitted(model),col="black")
+lines(ci[,2],col="red")
+lines(ci[,3],col="red")
+lines(pi[,2],col="blue")
+lines(pi[,3],col="blue")
+```
+
+The above plot is a good estimate for calculating house prices. All the predicted values are within the
+confidence interval.
+
+
+
